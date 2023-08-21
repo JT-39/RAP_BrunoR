@@ -36,7 +36,7 @@ NA)) |>
 
 
 #We are going to create a plot for 5 communes and compare the price 
-evolution in the communes
+#evolution in the communes
 #to the national price evolution. Let’s first list the communes:
 
 communes <- c("Luxembourg",
