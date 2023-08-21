@@ -2,7 +2,6 @@
 
 library(dplyr)
 library(ggplot2)
-library(purrr)
 library(tidyr)
 
 
@@ -34,32 +33,32 @@ country_level_data <- read.csv("datasets/country_level_data.csv")
 
 #Let’s compute the Laspeyeres index for each commune:
 
-commune_level_data <- commune_level_data %>%
-  group_by(locality) %>%
-  mutate(p0 = ifelse(year == "2010", average_price_nominal_euros, NA)) %>%
-  fill(p0, .direction = "down") %>%
+commune_level_data <- commune_level_data |>
+  group_by(locality) |>
+  mutate(p0 = ifelse(year == "2010", average_price_nominal_euros, NA)) |>
+  fill(p0, .direction = "down") |>
   mutate(p0_m2 = ifelse(year == "2010", average_price_m2_nominal_euros, 
-NA)) %>%
-  fill(p0_m2, .direction = "down") %>%
-  ungroup() %>%
+NA)) |>
+  fill(p0_m2, .direction = "down") |>
+  ungroup() |>
   mutate(pl = average_price_nominal_euros/p0*100,
          pl_m2 = average_price_m2_nominal_euros/p0_m2*100)
 
 
 #Let’s also compute it for the whole country:
 
-country_level_data <- country_level_data %>%
-  mutate(p0 = ifelse(year == "2010", average_price_nominal_euros, NA)) %>%
-  fill(p0, .direction = "down") %>%
+country_level_data <- country_level_data |>
+  mutate(p0 = ifelse(year == "2010", average_price_nominal_euros, NA)) |>
+  fill(p0, .direction = "down") |>
   mutate(p0_m2 = ifelse(year == "2010", average_price_m2_nominal_euros, 
-NA)) %>%
-  fill(p0_m2, .direction = "down") %>%
+NA)) |>
+  fill(p0_m2, .direction = "down") |>
   mutate(pl = average_price_nominal_euros/p0*100,
          pl_m2 = average_price_m2_nominal_euros/p0_m2*100)
 
 
 #We are going to create a plot for 5 communes and compare the price 
-evolution in the communes
+#evolution in the communes
 #to the national price evolution. Let’s first list the communes:
 
 communes <- c("Luxembourg",
