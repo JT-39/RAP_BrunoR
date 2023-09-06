@@ -181,7 +181,7 @@ Let’s test to see if all the communes from our dataset are represented.
 setdiff(flat_data$locality, communes)
 ```
 
-If the above code doesn’t show any communes, then this means that we are
+If the above code doesn’t show any communes, then this means that we are 
 accounting for every commune.
 
 
@@ -237,3 +237,4 @@ write.csv(country_level_data,
           "datasets/house_prices_country_level_data.csv",
           row.names = FALSE)
 ```
+
