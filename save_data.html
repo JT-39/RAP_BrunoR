@@ -11,6 +11,7 @@
 
 <meta name="author" content="Jake Tufts" />
 
+<meta name="date" content="2023-09-07" />
 
 <title>Nominal house prices data in Luxembourg - Data cleaning</title>
 
@@ -352,12 +353,18 @@ display: none;
 <h1 class="title toc-ignore">Nominal house prices data in Luxembourg -
 Data cleaning</h1>
 <h4 class="author">Jake Tufts</h4>
-<h4 class="date"><code>r Sys.Date()</code></h4>
+<h4 class="date">2023-09-07</h4>
 
 </div>
 
 
-<p><code>{r, warning=FALSE, message=FALSE} library(dplyr) library(ggplot2) library(janitor) library(purrr) library(readxl) library(rvest) library(stringr)</code></p>
+<pre class="r"><code>library(dplyr)
+library(ggplot2)
+library(janitor)
+library(purrr)
+library(readxl)
+library(rvest)
+library(stringr)</code></pre>
 <div id="downloading-the-data" class="section level2">
 <h2>Downloading the data</h2>
 <p>This data is downloaded from the Luxembourguish <a href="https://data.public.lu/fr/datasets/prix-annonces-des-logements-par-commune/">Open
@@ -369,6 +376,154 @@ commune.</p>
 <p>The function below uses the permanent URL from the Open Data Portal
 to access the data, but I have also rehosted the data, and use my link
 to download the data (for archival purposes):</p>
+<pre class="r"><code>get_raw_data &lt;- function(url = &quot;https://is.gd/1vvBAc&quot;){
+
+  raw_data &lt;- tempfile(fileext = &quot;.xlsx&quot;)
+  
+  download.file(url, raw_data, method = &quot;auto&quot;, mode = &quot;wb&quot;)
+  
+  sheets &lt;- excel_sheets(raw_data)
+  
+  read_clean &lt;- function(..., sheet){
+    read_excel(..., sheet = sheet) |&gt;
+      mutate(year = sheet)
+  }
+  
+  raw_data &lt;- map_dfr(sheets,
+                      ~read_clean(raw_data,
+                                  skip = 10,
+                                  sheet = .)) %&gt;%
+    clean_names()
+
+  raw_data %&gt;%
+    rename(locality = commune,
+           n_offers = nombre_doffres,
+           average_price_nominal_euros = prix_moyen_annonce_en_courant,
+           average_price_m2_nominal_euros = prix_moyen_annonce_au_m2_en_courant,
+           average_price_m2_nominal_euros = prix_moyen_annonce_au_m2_en_courant
+           ) %&gt;%
+    mutate(locality = str_trim(locality)) %&gt;%
+    select(year, locality, n_offers, starts_with(&quot;average&quot;))
+}</code></pre>
+<pre class="r"><code>raw_data &lt;- get_raw_data(url = &quot;https://github.com/b-rodrigues/rap4all/raw/master/datasets/vente-maison-2010-2021.xlsx&quot;)</code></pre>
+<pre><code>## New names:
+## • `*` -&gt; `*...3`
+## • `*` -&gt; `*...4`</code></pre>
+<p>We need clean the data: “Luxembourg” is “Luxembourg-ville” in 2010
+and 2011, then “Luxembourg”. “Pétange” is also spelt non-consistently,
+and we also need to convert columns to the right type. We also directly
+remove rows where the locality contains information on the “Source”:</p>
+<pre class="r"><code>clean_raw_data &lt;- function(raw_data){
+  raw_data %&gt;%
+    mutate(locality = ifelse(grepl(&quot;Luxembourg-Ville&quot;, locality),
+                             &quot;Luxembourg&quot;,
+                             locality),
+           locality = ifelse(grepl(&quot;P.tange&quot;, locality),
+                             &quot;Pétange&quot;,
+                             locality)
+           ) %&gt;%
+    filter(!grepl(&quot;Source&quot;, locality)) %&gt;%
+    mutate(across(starts_with(&quot;average&quot;), as.numeric))
+}</code></pre>
+<pre class="r"><code>flat_data &lt;- clean_raw_data(raw_data)</code></pre>
+<pre><code>## Warning: There were 2 warnings in `mutate()`.
+## The first warning was:
+## ℹ In argument: `across(starts_with(&quot;average&quot;), as.numeric)`.
+## Caused by warning:
+## ! NAs introduced by coercion
+## ℹ Run `dplyr::last_dplyr_warnings()` to see the 1 remaining warning.</code></pre>
+<p>We now need to make sure that we got all the communes/localities in
+there. There were mergers in 2011, 2015 and 2018. So we need to account
+for these localities.</p>
+<p>We’re now scraping data from Wikipedia of former Luxembourguish
+communes:</p>
+<pre class="r"><code>get_former_communes &lt;- function(
+            url = &quot;https://w.wiki/_wFe7&quot;,
+            min_year = 2009,
+            table_position = 3
+            ){
+
+  read_html(url) %&gt;%
+    html_table() %&gt;%
+    pluck(table_position) %&gt;%
+    clean_names() %&gt;%
+    filter(year_dissolved &gt; min_year)
+}</code></pre>
+<pre class="r"><code>former_communes &lt;- get_former_communes()</code></pre>
+<p>We can scrape current communes:</p>
+<pre class="r"><code>get_current_communes &lt;- function(
+    url = &quot;https://w.wiki/6nPu&quot;,
+    table_position = 2
+    ){
+  
+  rvest::read_html(url) |&gt;
+    rvest::html_table() |&gt;
+    purrr::pluck(table_position) |&gt;
+    janitor::clean_names()
+}</code></pre>
+<pre class="r"><code>current_communes &lt;- get_current_communes()</code></pre>
+<p>Let’s now create a list of all communes:</p>
+<pre class="r"><code>get_test_communes &lt;- function(former_communes, current_communes){
+  
+  # Put former and current communes together
+  communes &lt;- unique(c(former_communes$name, current_communes$commune))
+  # we need to rename some communes
+  
+  # Different spelling of these communes between wikipedia and the data
+  
+  communes[which(communes == &quot;Clemency&quot;)] &lt;- &quot;Clémency&quot;
+  communes[which(communes == &quot;Redange&quot;)] &lt;- &quot;Redange-sur-Attert&quot;
+  communes[which(communes == &quot;Erpeldange-sur-Sûre&quot;)] &lt;- &quot;Erpeldange&quot;
+  communes[which(communes == &quot;Luxembourg-City&quot;)] &lt;- &quot;Luxembourg&quot;
+  communes[which(communes == &quot;Käerjeng&quot;)] &lt;- &quot;Kaerjeng&quot;
+  communes[which(communes == &quot;Petange&quot;)] &lt;- &quot;Pétange&quot;
+  
+  communes
+}</code></pre>
+<pre class="r"><code>former_communes &lt;- get_former_communes()
+current_communes &lt;- get_current_communes()
+
+communes &lt;- get_test_communes(former_communes, current_communes)</code></pre>
+<p>Let’s test to see if all the communes from our dataset are
+represented.</p>
+<pre class="r"><code>setdiff(flat_data$locality, communes)</code></pre>
+<pre><code>## [1] NA                  &quot;Moyenne nationale&quot; &quot;Total d&#39;offres&quot;</code></pre>
+<p>If the above code doesn’t show any communes, then this means that we
+are accounting for every commune.</p>
+<p>Let’s keep the national average in another dataset:</p>
+<pre class="r"><code>make_country_level_data &lt;- function(flat_data){
+  country_level &lt;- flat_data %&gt;%
+    filter(grepl(&quot;nationale&quot;, locality)) %&gt;%
+    select(-n_offers)
+
+  offers_country &lt;- flat_data %&gt;%
+    filter(grepl(&quot;Total d.offres&quot;, locality)) %&gt;%
+    select(year, n_offers)
+
+  full_join(country_level, offers_country) %&gt;%
+    select(year, locality, n_offers, everything()) %&gt;%
+    mutate(locality = &quot;Grand-Duchy of Luxembourg&quot;)
+
+}</code></pre>
+<pre class="r"><code>country_level_data &lt;- make_country_level_data(flat_data)</code></pre>
+<pre><code>## Joining with `by = join_by(year)`</code></pre>
+<p>We can finish cleaning the commune data:</p>
+<pre class="r"><code>#Keep commune level data
+make_commune_level_data &lt;- function(flat_data){
+  flat_data %&gt;% 
+    filter(!grepl(&quot;nationale|offres&quot;, locality),
+           !is.na(locality))
+}</code></pre>
+<pre class="r"><code>commune_level_data &lt;- make_commune_level_data(flat_data)</code></pre>
+<p>We now save the dataset in a folder for further analysis (keep chunk
+option to <code>eval = FALSE</code> to avoid running it when
+knitting):</p>
+<pre class="r"><code>write.csv(commune_level_data,
+          &quot;datasets/house_prices_commune_level_data.csv&quot;,
+          row.names = FALSE)
+write.csv(country_level_data,
+          &quot;datasets/house_prices_country_level_data.csv&quot;,
+          row.names = FALSE)</code></pre>
 </div>
 
 

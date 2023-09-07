@@ -29,7 +29,7 @@ The function below uses the permanent URL from the Open Data
 Portal to access the data, but I have also rehosted the data, 
 and use my link to download the data (for archival purposes):
 
-```{r, eval = FALSE}
+```{r}
 
 get_raw_data <- function(url = "https://is.gd/1vvBAc"){
 
@@ -44,33 +44,28 @@ get_raw_data <- function(url = "https://is.gd/1vvBAc"){
       mutate(year = sheet)
   }
   
-    raw_data <- map(
-      sheets,
-      ~read_clean(raw_data,
-                  skip = 10,
-                  sheet = .)
-    ) |>
-      bind_rows() |>
-      clean_names()
-  
-    raw_data <- raw_data |>
-     rename(
-       locality = commune,
-       n_offers = nombre_doffres,
-       average_price_nominal_euros = prix_moyen_annonce_en_courant,
-       average_price_m2_nominal_euros = prix_moyen_annonce_au_m2_en_courant,
-       average_price_m2_nominal_euros = prix_moyen_annonce_au_m2_en_courant
-     ) |>
-      mutate(locality = str_trim(locality)) |>
-      select(year, locality, n_offers, starts_with("average"))
- 
-    return(raw_data)   
+  raw_data <- map_dfr(sheets,
+                      ~read_clean(raw_data,
+                                  skip = 10,
+                                  sheet = .)) %>%
+    clean_names()
+
+  raw_data %>%
+    rename(locality = commune,
+           n_offers = nombre_doffres,
+           average_price_nominal_euros = prix_moyen_annonce_en_courant,
+           average_price_m2_nominal_euros = prix_moyen_annonce_au_m2_en_courant,
+           average_price_m2_nominal_euros = prix_moyen_annonce_au_m2_en_courant
+           ) %>%
+    mutate(locality = str_trim(locality)) %>%
+    select(year, locality, n_offers, starts_with("average"))
 }
 ```
 
 ```{r}
-raw_data <- get_raw_data(url = "https://is.gd/1vvBAc")
+raw_data <- get_raw_data(url = "https://github.com/b-rodrigues/rap4all/raw/master/datasets/vente-maison-2010-2021.xlsx")
 ```
+
 
 We need clean the data: "Luxembourg" is "Luxembourg-ville" in 2010 and 2011,
 then "Luxembourg". "Pétange" is also spelt non-consistently, and we also need
