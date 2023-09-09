@@ -19,31 +19,6 @@ country_level_data <- read.csv("datasets/house_prices_country_level_data.csv")
 ```
 
 
-Compute the Laspeyeres index:
-
-```{r}
-get_laspeyeres_index <- function(dataset, start_year = "2010"){
-  
-  which_dataset <- deparse(substitute(dataset))
-  
-  group_var <- if(grepl("commune", which_dataset)){
-               quo(locality)
-             } else {
-               NULL
-             }
-  dataset  %>% 
-    group_by(!!group_var) %>% 
-    mutate(p0 = ifelse(year == start_year, average_price_nominal_euros, NA)) %>%
-    fill(p0, .direction = "down") %>%
-    mutate(p0_m2 = ifelse(year == start_year, average_price_m2_nominal_euros, 
-  NA)) %>%
-    fill(p0_m2, .direction = "down") %>%
-    ungroup() %>%
-    mutate(pl = average_price_nominal_euros/p0*100,
-           pl_m2 = average_price_m2_nominal_euros/p0_m2*100)
-}
-```
-
 The index for each commune and by country
 
 ```{r}
@@ -63,28 +38,6 @@ communes <- c("Luxembourg",
               "Schengen",
               "Wincrange")
 
-```
-
-
-Plot the price of communes
-
-```{r}
-make_plot <- function(commune){
-
-  commune_data <- commune_level_data %>%
-    filter(locality == commune)
-
-  data_to_plot <- bind_rows(
-    country_level_data,
-    commune_data
-  )
-
-  ggplot(data_to_plot) +
-    geom_line(aes(y = pl_m2,
-                  x = year,
-                  group = locality,
-                  colour = locality))
-}
 ```
 
 

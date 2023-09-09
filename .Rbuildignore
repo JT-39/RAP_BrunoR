@@ -1,1 +1,7 @@
 ^dev$
+^LICENSE\.md$
+^README\.Rmd$
+^CODE_OF_CONDUCT\.md$
+^RAP\.BrunoR\.nosync\.Rproj$
+^\.Rproj\.user$
+^Chapter 1$

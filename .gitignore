@@ -6,3 +6,4 @@ Chapter 1/
 .DS_Store
 *.Rproj
 .httr-oauth
+inst/doc
