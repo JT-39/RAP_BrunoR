@@ -56,7 +56,9 @@ and use my link to download the data (for archival purposes):
 
 
 ```{r}
-raw_data <- get_raw_data(url = "https://github.com/b-rodrigues/rap4all/raw/master/datasets/vente-maison-2010-2021.xlsx")
+
+raw_data <- get_raw_data(url_git_remote = "https://github.com/b-rodrigues/rap4all/",
+                         url_git_data = "raw/master/datasets/vente-maison-2010-2021.xlsx")
 ```
 
 We need clean the data: "Luxembourg" is "Luxembourg-ville" in 2010 and 2011,

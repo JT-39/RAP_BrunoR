@@ -13,7 +13,7 @@ communes <- get_test_communes(
   current_communes
 )
 
-raw_data <- get_raw_data(url = "https://is.gd/1vvBAc")
+raw_data <- get_raw_data(url_git_remote = "https://is.gd/1vvBAc", url_git_data = "")
 
 flat_data <- clean_raw_data(raw_data)
 

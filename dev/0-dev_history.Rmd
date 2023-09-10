@@ -106,7 +106,7 @@ local({
 The first call, to `knitr::knit()` knits the vignette, and makes the datasets
 available to the local environment. Inside this local environment it is now possible
 to call `usethis::use_data()` to save each data set in turn. The datasets are
-now save inside the `data/` folder of the package, and are thus available to users
+now saved inside the `data/` folder of the package, and are thus available to users
 of the package using `data("dataset_name")`.
 
 We still need to document the datasets. For this, we are going to inflate

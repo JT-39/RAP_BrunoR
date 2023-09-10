@@ -7,6 +7,7 @@
 #' @importFrom dplyr group_by ungroup mutate
 #' @importFrom rlang quo
 #' @importFrom tidyr fill
+#' @importFrom rlang .data
 #' @return The input dataset with added columns: p0, p0_m2, pl and pl_m2. p0 are prices at year 0 (2010), and pl are the index.
 #' @export
 #' @examples
@@ -18,20 +19,20 @@ get_laspeyeres_index <- function(dataset, start_year = "2010"){
   which_dataset <- deparse(substitute(dataset))
   
   group_var <- if(grepl("commune", which_dataset)){
-               quo(locality)
+               quo(.data$locality)
              } else {
                NULL
              }
   dataset |>
     group_by(!!group_var) |>
-    mutate(p0 = ifelse(year == start_year, average_price_nominal_euros, NA)) |>
-    fill(p0, .direction = "down") |>
-    mutate(p0_m2 = ifelse(year == start_year, average_price_m2_nominal_euros, 
+    mutate(p0 = ifelse(.data$year == start_year, .data$average_price_nominal_euros, NA)) |>
+    fill(.data$p0, .direction = "down") |>
+    mutate(p0_m2 = ifelse(.data$year == start_year, .data$average_price_m2_nominal_euros, 
   NA)) |>
-    fill(p0_m2, .direction = "down") |>
+    fill(.data$p0_m2, .direction = "down") |>
     ungroup() |>
-    mutate(pl = average_price_nominal_euros/p0*100,
-           pl_m2 = average_price_m2_nominal_euros/p0_m2*100)
+    mutate(pl = .data$average_price_nominal_euros/.data$p0*100,
+           pl_m2 = .data$average_price_m2_nominal_euros/.data$p0_m2*100)
 }
 
 #' make_plot Creates plot of Country and Commune Laspeyeres index prices (price adjusted) over time
@@ -52,7 +53,7 @@ get_laspeyeres_index <- function(dataset, start_year = "2010"){
 make_plot <- function(country_level_data, commune_level_data, commune){
 
   commune_data <- commune_level_data |>
-    filter(locality == commune)
+    filter(.data$locality == commune)
 
   data_to_plot <- bind_rows(
     country_level_data,
@@ -60,8 +61,8 @@ make_plot <- function(country_level_data, commune_level_data, commune){
   )
 
   ggplot(data_to_plot) +
-    geom_line(aes(y = pl_m2,
-                  x = year,
-                  group = locality,
-                  colour = locality))
+    geom_line(aes(y = .data$pl_m2,
+                  x = .data$year,
+                  group = .data$locality,
+                  colour = .data$locality))
 }

@@ -5,12 +5,14 @@
 \title{get_raw_data Gets raw nominal house price data from LU Open Data Portal}
 \usage{
 get_raw_data(
-  url =
-    "https://github.com/b-rodrigues/rap4all/raw/master/datasets/vente-maison-2010-2021.xlsx"
+  url_git_remote = "https://github.com/b-rodrigues/rap4all/",
+  url_git_data = "raw/master/datasets/vente-maison-2010-2021.xlsx"
 )
 }
 \arguments{
-\item{url}{Optional: Persistent url to the data}
+\item{url_git_remote}{Optional: Persistent url to git remote repo}
+
+\item{url_git_data}{Optional: Persistent url to git data in repo}
 }
 \value{
 A data frame

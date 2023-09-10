@@ -5,18 +5,19 @@
 #' @param raw_data The raw data to clean (output of get_raw_data)
 #' @details Removes uneeded rows, renames localities to make their names consistent across years and converts columns with prices to numeric columns
 #' @importFrom dplyr mutate filter across starts_with
+#' @importFrom rlang .data
 #' @return A data frame
 #' @export
 clean_raw_data <- function(raw_data){
-  raw_data %>%
-    mutate(locality = ifelse(grepl("Luxembourg-Ville", locality),
+  raw_data |>
+    mutate(locality = ifelse(grepl("Luxembourg-Ville", .data$locality),
                              "Luxembourg",
-                             locality),
-           locality = ifelse(grepl("P.tange", locality),
-                             "Pétange",
-                             locality)
-           ) %>%
-    filter(!grepl("Source", locality)) %>%
+                             .data$locality),
+           locality = ifelse(grepl("P.tange", .data$locality),
+                             "P\u00E9tange",
+                             .data$locality)
+           ) |>
+    filter(!grepl("Source", .data$locality)) |>
     mutate(across(starts_with("average"), as.numeric))
 }
 
@@ -51,6 +52,7 @@ get_current_communes <- function(
 #' @importFrom dplyr filter
 #' @importFrom purrr pluck
 #' @importFrom janitor clean_names
+#' @importFrom rlang .data
 #' @return A data frame
 #' @export
 
@@ -60,55 +62,59 @@ get_former_communes <- function(
             table_position = 3
             ){
 
-  read_html(url) %>%
-    html_table() %>%
-    pluck(table_position) %>%
-    clean_names() %>%
-    filter(year_dissolved > min_year)
+  read_html(url) |>
+    html_table() |>
+    pluck(table_position) |>
+    clean_names() |>
+    filter(.data$year_dissolved > min_year)
 }
 
 
 #' get_raw_data Gets raw nominal house price data from LU Open Data Portal
 #'
-#' @param url Optional: Persistent url to the data
+#' @param url_git_remote Optional: Persistent url to git remote repo
+#' @param url_git_data Optional: Persistent url to git data in repo
 #' @importFrom readxl excel_sheets read_excel
 #' @importFrom utils download.file
-#' @importFrom dplyr mutate rename select
+#' @importFrom dplyr mutate rename select %>%
 #' @importFrom stringr str_trim
 #' @importFrom janitor clean_names
 #' @importFrom purrr map_dfr
+#' @importFrom rlang .data
 #' @return A data frame
 #' @export
-get_raw_data <- function(url = "https://github.com/b-rodrigues/rap4all/raw/master/datasets/vente-maison-2010-2021.xlsx"){
+get_raw_data <- function(
+    url_git_remote = "https://github.com/b-rodrigues/rap4all/",
+    url_git_data = "raw/master/datasets/vente-maison-2010-2021.xlsx"){
 
   raw_data <- tempfile(fileext = ".xlsx")
 
-  download.file(url,
+  download.file(paste0(url_git_remote,url_git_data),
                 raw_data,
                 mode = "wb") # for compatibility with Windows
 
   sheets <- excel_sheets(raw_data)
 
   read_clean <- function(..., sheet){
-    read_excel(..., sheet = sheet) |>
+    read_excel(..., sheet = sheet) %>%
       mutate(year = sheet)
   }
 
   raw_data <- map_dfr(sheets,
                       ~read_clean(raw_data,
                                   skip = 10,
-                                  sheet = .)) |>
+                                  sheet = .)) %>%
     clean_names()
 
-  raw_data |>
-    rename(locality = commune,
-           n_offers = nombre_doffres,
-           average_price_nominal_euros = prix_moyen_annonce_en_courant,
-           average_price_m2_nominal_euros = prix_moyen_annonce_au_m2_en_courant,
-           average_price_m2_nominal_euros = prix_moyen_annonce_au_m2_en_courant
-           ) |>
-    mutate(locality = str_trim(locality)) |>
-    select(year, locality, n_offers, starts_with("average"))
+  raw_data %>%
+    rename(locality = .data$commune,
+           n_offers = .data$nombre_doffres,
+           average_price_nominal_euros = .data$prix_moyen_annonce_en_courant,
+           average_price_m2_nominal_euros = .data$prix_moyen_annonce_au_m2_en_courant,
+           average_price_m2_nominal_euros = .data$prix_moyen_annonce_au_m2_en_courant
+           ) %>%
+    mutate(locality = str_trim(.data$locality)) %>%
+    select(.data$year, .data$locality, .data$n_offers, starts_with("average"))
 
 }
 
@@ -126,12 +132,12 @@ get_test_communes <- function(former_communes, current_communes){
 
   # Different spelling of these communes between wikipedia and the data
 
-  communes[which(communes == "Clemency")] <- "Clémency"
+  communes[which(communes == "Clemency")] <- "Cl\u00E9mency"
   communes[which(communes == "Redange")] <- "Redange-sur-Attert"
-  communes[which(communes == "Erpeldange-sur-Sûre")] <- "Erpeldange"
+  communes[which(communes == "Erpeldange-sur-S\u00FBre")] <- "Erpeldange"
   communes[which(communes == "Luxembourg-City")] <- "Luxembourg"
-  communes[which(communes == "Käerjeng")] <- "Kaerjeng"
-  communes[which(communes == "Petange")] <- "Pétange"
+  communes[which(communes == 'K\u00E4erjeng')] <- "Kaerjeng"
+  communes[which(communes == "Petange")] <- "P\u00E9tange"
 
   communes
 }
@@ -141,31 +147,33 @@ get_test_communes <- function(former_communes, current_communes){
 #'
 #' @param flat_data Flat data df as returned by clean_flat_data()
 #' @importFrom dplyr filter
+#' @importFrom rlang .data
 #' @return A data frame
 #' @export
 make_commune_level_data <- function(flat_data){
-  flat_data %>% 
-    filter(!grepl("nationale|offres", locality),
-           !is.na(locality))
+  flat_data |> 
+    filter(!grepl("nationale|offres", .data$locality),
+           !is.na(.data$locality))
 }
 
 #' make_country_level_data Makes the final data at country level
 #'
 #' @param flat_data Flat data df as returned by clean_flat_data()
-#' @importFrom dplyr filter select mutate full_join
+#' @importFrom dplyr filter select mutate full_join everything
+#' @importFrom rlang .data
 #' @return A data frame
 #' @export
 make_country_level_data <- function(flat_data){
-  country_level <- flat_data %>%
-    filter(grepl("nationale", locality)) %>%
-    select(-n_offers)
+  country_level <- flat_data |>
+    filter(grepl("nationale", .data$locality)) |>
+    select(-.data$n_offers)
 
-  offers_country <- flat_data %>%
-    filter(grepl("Total d.offres", locality)) %>%
-    select(year, n_offers)
+  offers_country <- flat_data |>
+    filter(grepl("Total d.offres", .data$locality)) |>
+    select(.data$year, .data$n_offers)
 
-  full_join(country_level, offers_country) %>%
-    select(year, locality, n_offers, everything()) %>%
+  full_join(country_level, offers_country) |>
+    select(.data$year, .data$locality, .data$n_offers, everything()) |>
     mutate(locality = "Grand-Duchy of Luxembourg")
 
 }
