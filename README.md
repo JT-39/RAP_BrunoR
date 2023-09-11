@@ -29,4 +29,4 @@ data for Luxembourg.
 library(RAP.BrunoR.nosync)
 ```
 
-Test123 - has GitHub Actions on fusen branch worked? Not yet. Maybe…
+Test123 - has GitHub Actions on fusen branch worked? Not yet. Maybe….
