@@ -62,14 +62,27 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="housing-data-for-luxembourg">Housing data for Luxembourg<a class="anchor" aria-label="anchor" href="#housing-data-for-luxembourg"></a>
+<div class="page-header"><h1 id="rapbrunornosync">RAP.BrunoR.nosync<a class="anchor" aria-label="anchor" href="#rapbrunornosync"></a>
 </h1></div>
-<p>These scripts for the R programming language download nominal housing prices from the <em>Observatoire de l’Habitat</em> and tidy them up into a flat data frame.</p>
-<ul>
-<li>save_data.R: downloads, cleans, and creates data frames from the data</li>
-<li>analysis.R: creates plots of the data</li>
-</ul>
-<p>The aim is to build a fully functional and complete Reproducible Analytical Pipeline (RAP). I hope to continue the skills I learn from this in my own professional work.</p>
+<!-- badges: start -->
+
+<p>The goal of RAP.BrunoR.nosync is to …</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install the development version of RAP.BrunoR.nosync from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"JT-39/RAP_BrunoR"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="house-price-analysis-in-luxembourg">House price analysis in Luxembourg<a class="anchor" aria-label="anchor" href="#house-price-analysis-in-luxembourg"></a>
+</h2>
+<p>This package contains functions to get, clean and analyse housing price data for Luxembourg.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">RAP.BrunoR.nosync</span><span class="op">)</span></span></code></pre></div>
+<p>Test123 - yes</p>
+</div>
 </div>
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
@@ -100,7 +113,12 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/JT-39/RAP_BrunoR/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/JT-39/RAP_BrunoR/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
