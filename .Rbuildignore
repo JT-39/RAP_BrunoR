@@ -5,3 +5,6 @@
 ^RAP\.BrunoR\.nosync\.Rproj$
 ^\.Rproj\.user$
 ^Chapter 1$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
