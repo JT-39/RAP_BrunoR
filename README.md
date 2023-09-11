@@ -3,6 +3,18 @@
 
 # RAP.BrunoR.nosync
 
+
+The aim is to build a fully functional and complete Reproducible
+Analytical Pipeline (RAP). I hope to continue the skills I learn
+from this in my own professional work.
+
+New:
+
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# RAP.BrunoR.nosync
+
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/JT-39/RAP_BrunoR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JT-39/RAP_BrunoR/actions/workflows/R-CMD-check.yaml)
@@ -29,4 +41,6 @@ data for Luxembourg.
 library(RAP.BrunoR.nosync)
 ```
 
+
 Test123 - has GitHub Actions on fusen branch worked? Not yet
+
