@@ -1,11 +1,8 @@
-# Housing data for Luxembourg
 
-These scripts for the R programming language download nominal
-housing prices from the *Observatoire de l'Habitat* and
-tidy them up into a flat data frame.
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
-- save_data.R: downloads, cleans, and creates data frames from the data
-- analysis.R: creates plots of the data
+# RAP.BrunoR.nosync
+
 
 The aim is to build a fully functional and complete Reproducible
 Analytical Pipeline (RAP). I hope to continue the skills I learn
@@ -43,3 +40,7 @@ data for Luxembourg.
 ``` r
 library(RAP.BrunoR.nosync)
 ```
+
+
+Test123 - has GitHub Actions on fusen branch worked? Not yet
+
