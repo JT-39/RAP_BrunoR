@@ -19,6 +19,7 @@ get_laspeyeres_index Calculates the Laspeyeres index for each commune with 2010 
 }
 \examples{
 \dontrun{
+country_level_data_laspeyeres <- get_laspeyeres_index(country_level_data)
 commune_level_data_laspeyeres <- get_laspeyeres(commune_level_data)
 } 
 }

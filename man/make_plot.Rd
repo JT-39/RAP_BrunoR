@@ -21,7 +21,8 @@ make_plot Creates plot of Country and Commune Laspeyeres index prices (price adj
 }
 \examples{
 \dontrun{
-commune_level_data_laspeyeres <- get_laspeyeres(commune_level_data)
-make_plot(commune_level_data_laspeyeres, "Luxembourg")
+country_level_data_laspeyeres <- get_laspeyeres_index(country_level_data)
+commune_level_data_laspeyeres <- get_laspeyeres_index(commune_level_data)
+make_plot(country_level_data_laspeyeres, commune_level_data_laspeyeres, "Luxembourg")
 }
 }

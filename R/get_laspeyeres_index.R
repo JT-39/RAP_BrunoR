@@ -12,11 +12,19 @@
 #' @export
 #' @examples
 #' \dontrun{
+#' country_level_data_laspeyeres <- get_laspeyeres_index(country_level_data)
 #' commune_level_data_laspeyeres <- get_laspeyeres(commune_level_data)
 #' } 
 get_laspeyeres_index <- function(dataset, start_year = "2010"){
   
   which_dataset <- deparse(substitute(dataset))
+  
+  # Assertive programming
+  stopifnot("dataset must be one of `commune_level_data`
+           or `country_level_data`" =
+            (which_dataset %in% c(
+               "commune_level_data",
+               "country_level_data")))
   
   group_var <- if(grepl("commune", which_dataset)){
                quo(.data$locality)
@@ -26,10 +34,10 @@ get_laspeyeres_index <- function(dataset, start_year = "2010"){
   dataset |>
     group_by(!!group_var) |>
     mutate(p0 = ifelse(.data$year == start_year, .data$average_price_nominal_euros, NA)) |>
-    fill(.data$p0, .direction = "down") |>
+    fill("p0", .direction = "down") |>
     mutate(p0_m2 = ifelse(.data$year == start_year, .data$average_price_m2_nominal_euros, 
   NA)) |>
-    fill(.data$p0_m2, .direction = "down") |>
+    fill("p0_m2", .direction = "down") |>
     ungroup() |>
     mutate(pl = .data$average_price_nominal_euros/.data$p0*100,
            pl_m2 = .data$average_price_m2_nominal_euros/.data$p0_m2*100)
@@ -46,8 +54,9 @@ get_laspeyeres_index <- function(dataset, start_year = "2010"){
 #' @export
 #' @examples
 #' \dontrun{
-#'commune_level_data_laspeyeres <- get_laspeyeres(commune_level_data)
-#'make_plot(commune_level_data_laspeyeres, "Luxembourg")
+#' country_level_data_laspeyeres <- get_laspeyeres_index(country_level_data)
+#' commune_level_data_laspeyeres <- get_laspeyeres_index(commune_level_data)
+#' make_plot(country_level_data_laspeyeres, commune_level_data_laspeyeres, "Luxembourg")
 #' }
 
 make_plot <- function(country_level_data, commune_level_data, commune){

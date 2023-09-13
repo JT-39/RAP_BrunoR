@@ -17,7 +17,56 @@ raw_data <- get_raw_data(url_git_remote = "https://is.gd/1vvBAc", url_git_data =
 
 flat_data <- clean_raw_data(raw_data)
 
-testthat::expect_true(
-  all(communes %in% unique(flat_data$locality))
-)
+testthat::test_that("Check if all communes are accounted for", {
+  
+  expect_true(
+    all(communes %in% unique(flat_data$locality))
+    )
+  
+})
 
+testthat::test_that("make_country_level_data creates a valid country-level data frame", {
+  
+  # Create sample flat data for testing
+  flat_data <- data.frame(
+    locality = c("nationale", "Commune_A", "Total d.offres", "Commune_B"),
+    year = c(2010, 2011, 2010, 2011),
+    n_offers = c(100, 120, 200, 220)
+    # Add other columns as needed
+  )
+  
+  # Call the function with sample data
+  result <- make_country_level_data(flat_data)
+  
+  # Assert that the result is a data frame
+  testthat::expect_is(result, "data.frame")
+  
+  # Assert that the result contains the expected columns
+  testthat::expect_true("year" %in% colnames(result))
+  testthat::expect_true("locality" %in% colnames(result))
+  testthat::expect_true("n_offers" %in% colnames(result))
+  
+  # Assert that the "locality" column is set to "Grand-Duchy of Luxembourg"
+  testthat::expect_equal(unique(result$locality), "Grand-Duchy of Luxembourg")
+  
+  # Add more assertions as needed to validate the data transformation
+})
+
+
+testthat::test_that("make_commune_level_data filters out unwanted values and NAs", {
+  
+  # Create sample flat data for testing
+  flat_data <- data.frame(
+    locality = c("Commune_A", "nationale", "Commune_B", NA, "offres", "Commune_C")
+  )
+  
+  # Call the function with sample data
+  result <- make_commune_level_data(flat_data)
+  
+  # Assert that the result is a data frame
+  testthat::expect_is(result, "data.frame")
+  
+  # Assert that the result does not contain unwanted values or NAs
+  testthat::expect_false(any(grepl("nationale|offres", result$locality)))
+  testthat::expect_true(all(!is.na(result$locality)))
+})

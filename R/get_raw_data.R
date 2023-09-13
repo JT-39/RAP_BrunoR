@@ -9,16 +9,20 @@
 #' @return A data frame
 #' @export
 clean_raw_data <- function(raw_data){
-  raw_data |>
-    mutate(locality = ifelse(grepl("Luxembourg-Ville", .data$locality),
-                             "Luxembourg",
-                             .data$locality),
-           locality = ifelse(grepl("P.tange", .data$locality),
-                             "P\u00E9tange",
-                             .data$locality)
-           ) |>
-    filter(!grepl("Source", .data$locality)) |>
-    mutate(across(starts_with("average"), as.numeric))
+  
+  suppressWarnings({
+    raw_data |>
+      mutate(locality = ifelse(grepl("Luxembourg-Ville", .data$locality),
+                               "Luxembourg",
+                               .data$locality),
+             locality = ifelse(grepl("P.tange", .data$locality),
+                               "P\u00E9tange",
+                               .data$locality)
+             ) |>
+      filter(!grepl("Source", .data$locality)) |>
+      mutate(across(starts_with("average"), as.numeric))
+  })
+  
 }
 
 #' get_current_communes Downloads list of current communes from Wikipedia
@@ -107,14 +111,13 @@ get_raw_data <- function(
     clean_names()
 
   raw_data %>%
-    rename(locality = .data$commune,
-           n_offers = .data$nombre_doffres,
-           average_price_nominal_euros = .data$prix_moyen_annonce_en_courant,
-           average_price_m2_nominal_euros = .data$prix_moyen_annonce_au_m2_en_courant,
-           average_price_m2_nominal_euros = .data$prix_moyen_annonce_au_m2_en_courant
+    rename(locality = "commune",
+           n_offers = "nombre_doffres",
+           average_price_nominal_euros = "prix_moyen_annonce_en_courant",
+           average_price_m2_nominal_euros = "prix_moyen_annonce_au_m2_en_courant"
            ) %>%
     mutate(locality = str_trim(.data$locality)) %>%
-    select(.data$year, .data$locality, .data$n_offers, starts_with("average"))
+    select("year", "locality", "n_offers", starts_with("average"))
 
 }
 
@@ -166,14 +169,14 @@ make_commune_level_data <- function(flat_data){
 make_country_level_data <- function(flat_data){
   country_level <- flat_data |>
     filter(grepl("nationale", .data$locality)) |>
-    select(-.data$n_offers)
+    select(-"n_offers")
 
   offers_country <- flat_data |>
     filter(grepl("Total d.offres", .data$locality)) |>
-    select(.data$year, .data$n_offers)
+    select("year", "n_offers")
 
   full_join(country_level, offers_country) |>
-    select(.data$year, .data$locality, .data$n_offers, everything()) |>
+    select("year", "locality", "n_offers", everything()) |>
     mutate(locality = "Grand-Duchy of Luxembourg")
 
 }
