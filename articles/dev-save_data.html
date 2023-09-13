@@ -67,7 +67,7 @@
       <img src="" class="logo" alt=""><h1>dev-save_data</h1>
                         <h4 data-toc-skip class="author">Jake Tufts</h4>
             
-            <h4 data-toc-skip class="date">2023-09-11</h4>
+            <h4 data-toc-skip class="date">2023-09-13</h4>
       
       
       <div class="d-none name"><code>dev-save_data.Rmd</code></div>
@@ -91,7 +91,8 @@ unit tests in the next chapter.
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org" class="external-link">readxl</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rvest.tidyverse.org/" class="external-link">rvest</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="downloading-the-data">Downloading the data<a class="anchor" aria-label="anchor" href="#downloading-the-data"></a>
 </h2>
@@ -116,13 +117,7 @@ and 2011, then “Luxembourg”. “Pétange” is also spelt non-consistently,
 and we also need to convert columns to the right type. We also directly
 remove rows where the locality contains information on the “Source”:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">flat_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clean_raw_data.html">clean_raw_data</a></span><span class="op">(</span><span class="va">raw_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: There were 2 warnings in `mutate()`.</span></span>
-<span><span class="co">#&gt; The first warning was:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `across(starts_with("average"), as.numeric)`.</span></span>
-<span><span class="co">#&gt; Caused by warning:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> NAs introduced by coercion</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Run `dplyr::last_dplyr_warnings()` to see the 1 remaining warning.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">flat_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clean_raw_data.html">clean_raw_data</a></span><span class="op">(</span><span class="va">raw_data</span><span class="op">)</span></span></code></pre></div>
 <p>We now need to make sure that we got all the communes/localities in
 there. There were mergers in 2011, 2015 and 2018. So we need to account
 for these localities.</p>
@@ -167,13 +162,15 @@ knitting):</p>
 <p>Compute the Laspeyeres index:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' \dontrun{</span></span>
+<span><span class="co">#' country_level_data_laspeyeres &lt;- get_laspeyeres_index(country_level_data)</span></span>
 <span><span class="co">#' commune_level_data_laspeyeres &lt;- get_laspeyeres(commune_level_data)</span></span>
 <span><span class="co">#' } </span></span></code></pre></div>
 <p>Plot the prices of the communes</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' \dontrun{</span></span>
-<span><span class="co">#'commune_level_data_laspeyeres &lt;- get_laspeyeres(commune_level_data)</span></span>
-<span><span class="co">#'make_plot(commune_level_data_laspeyeres, "Luxembourg")</span></span>
+<span><span class="co">#' country_level_data_laspeyeres &lt;- get_laspeyeres_index(country_level_data)</span></span>
+<span><span class="co">#' commune_level_data_laspeyeres &lt;- get_laspeyeres_index(commune_level_data)</span></span>
+<span><span class="co">#' make_plot(country_level_data_laspeyeres, commune_level_data_laspeyeres, "Luxembourg")</span></span>
 <span><span class="co">#' }</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
