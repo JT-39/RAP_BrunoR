@@ -2,10 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
-Chapter 1/
-.DS_Store
-*.Rproj
-.httr-oauth
 inst/doc
-docs/
+Chapter 1/
+*.Rproj
 docs
+.DS_Store

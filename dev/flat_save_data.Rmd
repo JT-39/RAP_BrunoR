@@ -13,7 +13,6 @@ unit tests in the next chapter.
 
 ```{r development, include=FALSE}
 library(testthat)
-library(assertthat)
 ```
 
 
