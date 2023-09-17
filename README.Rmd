@@ -37,5 +37,3 @@ This package contains functions to get, clean and analyse housing price data for
 ```{r example}
 library(RAP.BrunoR.nosync)
 ```
-
-Test123 - has GitHub Actions on fusen branch worked? Not yet. Maybe..... Yes! Proper working?
