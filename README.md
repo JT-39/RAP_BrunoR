@@ -1,12 +1,8 @@
-# Housing data for Luxembourg
+# How to run
 
-These scripts for the R programming language download nominal
-housing prices from the *Observatoire de l'Habitat* and
-tidy them up into a flat data frame.
-
-- save_data.R: downloads, cleans, and creates data frames from the data
-- analysis.R: creates plots of the data
-
-The aim is to build a fully functional and complete Reproducible
-Analytical Pipeline (RAP). I hope to continue the skills I learn
-from this in my own professional work.
+- Clone the repository: `git clone git@github.com:JT-39/RAP_BrunoR.git`
+- Switch to the `pipeline` branch: `git checkout pipeline`
+- Start an R session in the folder and run `renv::restore()` 
+   to install the project’s dependencies.
+- Run the pipeline with `targets::tar_make()`.
+- Checkout `analyse_data.html` for the output.
