@@ -67,7 +67,7 @@
       <img src="" class="logo" alt=""><h1>dev-save_data</h1>
                         <h4 data-toc-skip class="author">Jake Tufts</h4>
             
-            <h4 data-toc-skip class="date">2023-09-13</h4>
+            <h4 data-toc-skip class="date">2023-09-17</h4>
       
       
       <div class="d-none name"><code>dev-save_data.Rmd</code></div>
@@ -133,7 +133,8 @@ communes:</p>
 <code class="sourceCode R"><span><span class="va">former_communes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_former_communes.html">get_former_communes</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">current_communes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_current_communes.html">get_current_communes</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">communes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_test_communes.html">get_test_communes</a></span><span class="op">(</span><span class="va">former_communes</span>, <span class="va">current_communes</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">communes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_test_communes.html">get_test_communes</a></span><span class="op">(</span><span class="va">former_communes</span>, <span class="va">current_communes</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Unknown or uninitialised column: `commune`.</span></span></code></pre></div>
 <p>Let’s test to see if all the communes from our dataset are
 represented.</p>
 <p>If the above code doesn’t show any communes, then this means that we
