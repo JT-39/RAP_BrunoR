@@ -17,7 +17,7 @@ You can install the development version of RAP.BrunoR.nosync from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("JT-39/RAP_BrunoR")
+devtools::install_github("JT-39/RAP_BrunoR@fusen")
 ```
 
 ## House price analysis in Luxembourg
