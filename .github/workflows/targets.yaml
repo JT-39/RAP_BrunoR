@@ -26,7 +26,7 @@
 on:
   push:
     branches:
-      - Dockerized_pipeline
+      - Targets-pipeline
 
 name: targets
 

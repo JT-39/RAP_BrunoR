@@ -49,8 +49,7 @@ list(
   
   tar_render(
     analyse_data,
-    "analyse_data.Rmd",
-    output_dir = "/home/housing/pipeline_output"
+    "analyse_data.Rmd"
   )
   
 )
