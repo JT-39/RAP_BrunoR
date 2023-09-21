@@ -7,3 +7,5 @@
 - Run the Docker container (and mount a volume) using `docker run --rm --name housing_container -v 
 /path/to/shared_folder:/home/housing/shared_folder:rw housing_image`
 - Check the contents of `shared_folder` for the output.
+
+- Test
