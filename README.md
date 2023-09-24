@@ -9,5 +9,3 @@
 - In this case `docker run --rm --name housing_container -v 
 ./shared_folder:/home/housing/shared_folder:rw housing_image`
 - Check the contents of `shared_folder` for the output.
-
-Test.
