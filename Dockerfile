@@ -1,31 +1,4 @@
-FROM rocker/r-ver:4.3.1
-
-RUN apt-get update && apt-get install -y \
-    libglpk-dev \
-    libxml2-dev \
-    libcairo2-dev \
-    libgit2-dev \
-    default-libmysqlclient-dev \
-    libpq-dev \
-    libsasl2-dev \
-    libsqlite3-dev \
-    libssh2-1-dev \
-    libxtst6 \
-    libcurl4-openssl-dev \
-    libharfbuzz-dev \
-    libfribidi-dev \
-    libfreetype6-dev \
-    libpng-dev \
-    libtiff5-dev \
-    libjpeg-dev \
-    libxt-dev \
-    unixodbc-dev \
-    wget \
-    pandoc
-
-RUN R -e "install.packages('remotes')"
-
-RUN R -e "install.packages('renv')"
+FROM jt39/r_4.3.1:docker-actions-pipeline-fcdf16b4650255182250fc05cb8ff28543bc5832
 
 RUN mkdir /home/housing
 
@@ -41,7 +14,7 @@ COPY analyse_data.Rmd /home/housing/analyse_data.Rmd
 
 COPY _targets.R /home/housing/_targets.R
 
-RUN R -e "options(repos = c(CRAN = 'https://cran.r-project.org/'));setwd('/home/housing');renv::init();renv::restore()"
+RUN R -e "setwd('/home/housing');renv::init();renv::restore()"
 
 RUN cd /home/housing && R -e "targets::tar_make()"
 
