@@ -11,7 +11,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: r_4.2.2
+      IMAGE_NAME: r_4.3.1
     steps:
       - name: Setup
         uses: docker/setup-buildx-action@v2
@@ -23,6 +23,5 @@ jobs:
       - name: Build image and push to Docker Hub
         uses: docker/build-push-action@v4
         with:
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:
-            ${{ github.ref_name }}-${{ github.sha }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }}
           push: true
