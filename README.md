@@ -1,9 +1,5 @@
-# How to run
+# Demo for Chapter 15 of Building Reproducible Analytical Pipelines with R
 
-- Make sure Docker is installed and working on your system
-- Clone the repository: `git clone git@github.com:RAP_Bruno/Targets-pipeline.git`
-- Switch to the `Targets-pipeline` branch: `git checkout Targets-pipeline`
-- Build the Docker image using `docker build -t housing_image .`
-- Run the Docker container (and mount a volume) using `docker run --rm --name housing_container -v 
-/path/to/shared_folder:/home/housing/shared_folder:rw housing_image`
-- Check the contents of `shared_folder` for the output.
+You can read the chapter here: https://raps-with-r.dev/ci_cd.html
+
+Each time a change gets pushed to this repo, a Docker image gets built and pushed to Docker Hub.
