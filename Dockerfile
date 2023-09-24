@@ -1,4 +1,4 @@
-FROM rocker/r-ver:4.3.0
+FROM rocker/r-ver:4.2.1
 
 RUN apt-get update && apt-get install -y \
     libglpk-dev \
@@ -25,4 +25,5 @@ RUN apt-get update && apt-get install -y \
 
 RUN R -e "install.packages('remotes')"
 
-RUN R -e "remotes::install_version('renv', '1.0.2')"
+# RUN R -e "remotes::install_version('renv', '1.0.0')"
+RUN R -e "remotes::install_github('rstudio/renv@0.16.0')"
