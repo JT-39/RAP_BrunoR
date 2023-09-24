@@ -21,9 +21,9 @@ jobs:
 
     - name: Docker Run Action
       run: > 
-        docker run --rm --name housing_container -v
+        docker run --rm --name housing_actions_container -v
         /github/workspace/shared_folder:/home/housing/shared_folder:rw 
-        housing_image
+        housing_image_actions
 
     - uses: actions/upload-artifact@v3
       with:
